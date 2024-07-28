@@ -10,10 +10,12 @@ const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprit
 ---
 
 <article class="flex flex-col gap-2 bg-white rounded-lg shadow-md p-4">
-  <section>
-    <h2
-      class="text-gray-800 text-2xl font-bold capitalize"
-    >{ name }</h2>
-    <img src={ imageUrl } alt={ name } class="object-contain h-48 w-full" />
-  </section>
+  <a href={ `/pokemons/${ id }` }>
+    <section>
+      <h2
+        class="text-gray-800 text-2xl font-bold capitalize"
+      >{ name }</h2>
+      <img src={ imageUrl } alt={ name } class="object-contain h-48 w-full" />
+    </section>
+  </a>
 </article>
