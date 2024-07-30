@@ -2,18 +2,46 @@
 interface Props {
   name: string
   url: string
+  isBig?: boolean
 }
-const { name, url } = Astro.props
+const { name, url, isBig = false } = Astro.props
 
 const id = url.split( '/' ).at( -2 )
 const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${ id }.png`
 ---
 
-<article class="w-[300px] flex flex-col gap-2 bg-white rounded-lg shadow-md p-4 md:min-w-[450px]">
+<article
+  class:list={[
+    `flex flex-col gap-2 rounded-lg shadow-md p-4 w-[300px]`,
+    {
+      'border bg-white text-gray-800': !isBig,
+      'w-[600px] text-white': isBig,
+    },
+  ]}
+>
   <a href={ `/pokemons/${ name }` }>
     <section>
-      <h2 class="text-gray-800 text-2xl font-bold capitalize">#{ id } - { name }</h2>
-      <img src={ imageUrl } alt={ name } class="object-contain h-48 w-full" />
+      <h2
+        class:list={[
+          "font-bold capitalize",
+          {
+            'text-2xl': !isBig,
+            'text-3xl': isBig,
+          },
+        ] }
+      >#{ id } - { name }</h2>
+      <img
+        transition:name={ `${ name }-image` }
+        src={ imageUrl }
+        alt={ name }
+        class:list={[
+          'object-contain w-full',
+          {
+            'h-48': !isBig,
+            'h-96': isBig,
+          }
+        ]}
+      />
     </section>
   </a>
 </article>
