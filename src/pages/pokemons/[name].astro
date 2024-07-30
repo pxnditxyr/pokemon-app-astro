@@ -1,13 +1,43 @@
 ---
 import type { GetStaticPaths } from "astro";
+
 import MainLayout from '../../layouts/MainLayout.astro'
+import PokemonCard from '../../components/pokemons/PokemonCard.astro'
+import AudioPlayer from '../../components/media/AudioPlayer.astro'
 
 
 export const getStaticPaths = (() => {
-
-  return [];
+  return [
+    {
+      params: { name: 'bulbasaur' },
+      props: { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' }
+    },
+    { params: { name: 'charmander' } },
+    { params: { name: 'squirtle' } }
+  ]
 }) satisfies GetStaticPaths;
+
+const { name } = Astro.params
+const { url }  = Astro.props
+
+const id = url.split( '/' ).at( -2 )
+const audioSrc = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${ id }.ogg`
 ---
 
-<MainLayout title="">
+<MainLayout title={ name }>
+  <nav class="py-4">
+    <a href="/"> Return </a>
+  </nav>
+  <div class="px-4 py-8 flex flex-col gap-12 w-full items-center justify-center">
+    <h1 class="text-4xl font-bold"> { name } </h1>
+    <PokemonCard name={ name } url={ url } />
+
+    <AudioPlayer src={ audioSrc } />
+  </div>
 </MainLayout>
+
+<style>
+a {
+  @apply text-blue-500 hover:underline text-lg font-bold;
+}
+</style>
