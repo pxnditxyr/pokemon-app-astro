@@ -1,0 +1,60 @@
+---
+import type { GetStaticPaths } from "astro";
+import MainLayout from '@layouts/MainLayout.astro'
+import PokemonCard from '@components/pokemons/PokemonCard.astro'
+
+import type { IPokemonListResponse } from '@interfaces/pokemon-list.interface'
+
+
+export const getStaticPaths = ( async ({ paginate }) => {
+  const response = await fetch( 'https://pokeapi.co/api/v2/pokemon/?limit=151' )
+  const  { results } = ( await response.json() ) as IPokemonListResponse
+
+
+
+  return paginate(
+    results,
+    { pageSize: 10 }
+  )
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props
+
+console.log( page )
+---
+
+<MainLayout title="Home">
+  <h1 class="text-4xl font-bold">Hello, I'm Pxndxs 🐼</h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-8">
+    {
+      page.data.map( ({ name, url }) => (
+        <PokemonCard
+          name={ name }
+          url={ url }
+        />
+      ) )
+    }
+  </div>
+  <footer class="flex justify-center gap-4">
+    <nav class="flex justify-center items-center gap-6">
+      <a
+        href={ page.url.prev }
+        class:list={[
+          'bg-blue-500 text-white px-4 py-2 rounded',
+          page.currentPage === 1 && 'bg-gray-600 text-gray-400'
+        ]}
+      > Previous </a>
+      <span
+        class="text-gray-300 text-lg font-semibold"
+      > Page { page.currentPage } of { page.lastPage } </span>
+      <a
+        href={ page.url.next }
+        class:list={[
+          'bg-blue-500 text-white px-4 py-2 rounded',
+          page.currentPage === page.lastPage && 'bg-gray-600 text-gray-400'
+        ]}
+      > Next </a>
+    </nav>
+  </footer>
+
+</MainLayout>

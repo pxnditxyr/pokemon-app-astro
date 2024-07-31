@@ -1,8 +1,8 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro'
-import PokemonCard from '../components/pokemons/PokemonCard.astro'
+import MainLayout from '@layouts/MainLayout.astro'
+import PokemonCard from '@components/pokemons/PokemonCard.astro'
 
-import type { IPokemonListResponse } from '../interfaces/pokemon-list.interface'
+import type { IPokemonListResponse } from '@interfaces/pokemon-list.interface'
 
 const response = await fetch( 'https://pokeapi.co/api/v2/pokemon' )
 

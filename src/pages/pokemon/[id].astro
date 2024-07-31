@@ -1,32 +1,25 @@
 ---
+import type { GetStaticPaths } from "astro"
 import MainLayout from '@layouts/MainLayout.astro'
-import PokemonCard from '@components/pokemons/PokemonCard.astro'
-import AudioPlayer from '@components/media/AudioPlayer.astro'
-
-import type { GetStaticPaths } from "astro";
-import type { IPokemonListResponse } from "@interfaces/pokemon-list.interface";
-
+import type { IPokemonListResponse } from "@interfaces/pokemon-list.interface"
+import PokemonCard from "@components/pokemons/PokemonCard.astro"
+import AudioPlayer from "@components/media/AudioPlayer.astro"
 
 export const getStaticPaths = ( async () => {
-
-  const response = await fetch( `https://pokeapi.co/api/v2/pokemon?limit=151` )
-  const { results } = await response.json() as IPokemonListResponse
-
+  const response = await fetch( 'https://pokeapi.co/api/v2/pokemon/?limit=151' )
+  const { results } = ( await response.json() ) as IPokemonListResponse
   const paths = results.map( ({ name, url }) => ({
-    params: { name },
+    params: { id: url.split( '/' ).at( -2 ) },
     props: { name, url }
   }) )
-
   return paths
-}) satisfies GetStaticPaths;
+}) satisfies GetStaticPaths
 
-const { name } = Astro.params
-const { url }  = Astro.props
+const { id } = Astro.params
+const { name, url } = Astro.props
 
-const id = url.split( '/' ).at( -2 )
 const audioSrc = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${ id }.ogg`
 ---
-
 <MainLayout title={ name }>
   <nav class="py-4">
     <a href="/"> Return </a>
