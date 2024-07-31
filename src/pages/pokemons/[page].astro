@@ -4,6 +4,7 @@ import MainLayout from '@layouts/MainLayout.astro'
 import PokemonCard from '@components/pokemons/PokemonCard.astro'
 
 import type { IPokemonListResponse } from '@interfaces/pokemon-list.interface'
+import Title from "@components/shared/Title.astro";
 
 
 export const getStaticPaths = ( async ({ paginate }) => {
@@ -19,12 +20,10 @@ export const getStaticPaths = ( async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props
-
-console.log( page )
 ---
 
 <MainLayout title="Home">
-  <h1 class="text-4xl font-bold">Hello, I'm Pxndxs 🐼</h1>
+  <Title> Paginated Pokemons - Pxndxs 🐼 </Title>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 p-8">
     {
       page.data.map( ({ name, url }) => (
