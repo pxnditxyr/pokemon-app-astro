@@ -42,9 +42,23 @@ const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprit
     <div class="flex items-center justify-center w-full gap-4">
       <Title> { name } </Title>
 
-      <button class="hover:animate-pulse text-red-500 flex items-center justify-center">
-        <Icon name="heart-outline" size={ 50 } />
-        <Icon name="heart-filled" size={ 50 } class="hidden" />
+      <button
+        id="favorite-button"
+        class="hover:animate-pulse text-red-500 flex items-center justify-center"
+        data-name={ name }
+        data-id={ id }
+      >
+        <Icon
+          name="heart-outline"
+          size={ 50 }
+          data-outline
+        />
+        <Icon
+          name="heart-filled"
+          size={ 50 }
+          data-filled
+          class="hidden"
+        />
       </button>
     </div>
 
@@ -53,6 +67,74 @@ const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprit
     <AudioPlayer src={ audioSrc } />
   </div>
 </MainLayout>
+
+<script>
+interface IFavoritePokemon {
+  name: string
+  id:   number
+}
+
+// document.addEventListener( 'astro:before-preparation', () => {
+//   console.log( 'before-preparation' )
+// } )
+//
+// document.addEventListener( 'astro:after-preparation', () => {
+//   console.log( 'after-preparation' )
+// } )
+//
+// document.addEventListener( 'astro:before-swap', () => {
+//   console.log( 'before-swap' )
+// } )
+//
+// document.addEventListener( 'astro:after-swap', () => {
+//   console.log( 'after-swap' )
+// } )
+//
+// document.addEventListener( 'astro:page-load', () => {
+//   console.log( 'page-load' )
+// } )
+
+
+const handlePageLoad = () => {
+
+  let favoritePokemons : IFavoritePokemon[] = JSON.parse(
+    localStorage.getItem( 'favorites' ) ?? '[]'
+  )
+
+  const favoriteButton = document.querySelector( '#favorite-button' ) as HTMLButtonElement
+
+  if ( !favoriteButton ) return
+
+  const name = favoriteButton.dataset.name ?? ''
+  const id   = Number( favoriteButton.dataset.id ?? '' )
+  const isFavorite = favoritePokemons.some( pokemon => pokemon.id === id )
+
+  const heartOutline = favoriteButton.querySelector( '[data-outline]' ) as HTMLElement
+  const heartFilled  = favoriteButton.querySelector( '[data-filled]' ) as HTMLElement
+
+  if ( isFavorite ) {
+    heartOutline.classList.add( 'hidden' )
+    heartFilled.classList.remove( 'hidden' )
+  }
+
+  const toggleFavorite = () => {
+    const isFavorite = favoritePokemons.some( pokemon => pokemon.id === id )
+    if ( isFavorite )
+      favoritePokemons = favoritePokemons.filter( pokemon => pokemon.id !== id )
+    else
+      favoritePokemons.push({ id, name })
+    localStorage.setItem( 'favorites', JSON.stringify( favoritePokemons ) )
+  }
+
+  favoriteButton.addEventListener( 'click', () => {
+    heartOutline.classList.toggle( 'hidden' )
+    heartFilled.classList.toggle( 'hidden' )
+    toggleFavorite()
+  } )
+}
+document.addEventListener( 'astro:page-load', handlePageLoad )
+
+</script>
 
 <style>
 a {
